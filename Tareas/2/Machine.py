@@ -197,7 +197,7 @@ class Machine:
         return ans, Machine.suc
 
     def epsilon(self):
-        ep = (2 ** -(self.nm + 1))
+        ep = (2 ** -(self.nm))
 
         if ep == 0:
             print(Colors.FAIL + "The epsilon of the machine is smaller than the smallest number of your computer, "
@@ -220,7 +220,7 @@ class Machine:
         for i in range(self.nm):
             man += "0"
 
-        s_sign = "1"
+        s_sign = "0"
         exp = ""
         for j in range(self.get_ne()):
             exp += "1"
