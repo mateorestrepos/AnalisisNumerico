@@ -1,14 +1,15 @@
 function x = runge_kutta(f,h,T,x0)
     N = ceil(T/h);
-    x = zeros(length(x0),N);
+    x = zeros(length(x0),N+1);
     x(:,1) = x0;
-    for k=2:N
-        k1 = f(x(:,k-1))';
-        k2 = f(x(:,k-1) + k1*h/2)';
-        k3 = f(x(:,k-1) + k2*h/2)';
-        k4 = f(x(:,k-1) + k3*h)';
-        
-        x(:,k) = x(:,k-1) + h*(k1/6 + k2/3 + k3/3 + k4/6);
+    t = 0;
+    for k=2:N+1
+        k1 = h*f(t, x(:,k-1))';
+        k2 = h*f(t + h/2, x(:,k-1) + k1/2)';
+        k3 = h*f(t + h/2, x(:,k-1) + k2/2)';
+        k4 = h*f(t + h, x(:,k-1) + k3)';
+        x(:,k) = x(:,k-1) + (k1 + 2*k2 + 2*k3 + k4)/6;
+        t = t + h;
     end
 end
 
