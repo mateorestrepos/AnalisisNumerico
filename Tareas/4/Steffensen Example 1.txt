@@ -1,0 +1,11 @@
+Fix point vs Steffensen, to approximate the root of f(x) = x^3 + 4*x^2 - 10 with the function 
+g(x) = (10/(x + 4))^(1/2) with x0 = 1.5.
+
+i                 FixP.                 Stef.                 Error1                 Error2
+0                 1.5                   1.36526522                                   
+1                 1.34839972            1.36523058            0.1516                 3.4639e-05
+2                 1.36737637                                  0.019                  
+3                 1.36495702                                  0.0024                 
+4                 1.36526475                                  0.0003                 
+5                 1.36522559                                  3.9154e-05             
+6                 1.36523058                                  4.9815e-06             
