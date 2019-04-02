@@ -429,7 +429,7 @@ fm = ("Test multiplicity", [], [], True, test_multiplicity)
 fb = ("Bisection", ["a", "b"], ("a", "b", "xm"), 0, "", identity, True, bisection)
 fs = ("Secant", ["x0", "x1"], ["x"], 1, "There's a division by 0.", identity, True, secant)
 fg = ("Gauss", ["A", "b"], (False, True), False, gauss_interaction)
-fn = ("Newton", ["X0"], ["x"], 0, "The derivative became 0.", "", identity, True, newton)
+fn = ("Newton", ["X0"], ["x"], 0, "The derivative became 0.", identity, True, newton)
 fnm = ("Newton modified", ["X0"], ["x"], 0, "There's a division by 0.", identity,
        True, newton_modified)
 ffp = ("False position", ["a", "b"], ("a", "b", "xm"), 0, "", identity, True, fake_rule)
