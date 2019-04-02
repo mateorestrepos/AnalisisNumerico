@@ -6,6 +6,7 @@ from sympy.solvers import solve
 from sympy import lambdify
 from math import sqrt
 from math import ceil
+import pyperclip
 
 
 SUP = str.maketrans("4567890", "⁴⁵⁶⁷⁸⁹⁰")
@@ -412,18 +413,26 @@ def test_multiplicity(params):
     print("It's multiplicity is " + str(m))
 
 
+def identity(f, x0):
+    return f.subs(x, x0).evalf()
+
+
+def f_point(f, x0):
+    return f.subs(x, x0).evalf() - x0
+
+
 # Name, Parameters, Names_table, start, Failed message, If it prints, method
-fp = ("Fix point", ["X0"], ["x"], 0, "The iterations are not decreasing.",
+fp = ("Fix point", ["X0"], ["x"], 0, "The iterations are not decreasing.", f_point,
       True, fix_point)
 ft = ("Test theorem fix point", [], [], True, test)
 fm = ("Test multiplicity", [], [], True, test_multiplicity)
-fb = ("Bisection", ["a", "b"], ("a", "b", "xm"), 0, True, bisection)
-fs = ("Secant", ["x0", "x1"], ["x"], 1, "There's a division by 0.", True, secant)
+fb = ("Bisection", ["a", "b"], ("a", "b", "xm"), 0, "", identity, True, bisection)
+fs = ("Secant", ["x0", "x1"], ["x"], 1, "There's a division by 0.", identity, True, secant)
 fg = ("Gauss", ["A", "b"], (False, True), False, gauss_interaction)
-fn = ("Newton", ["X0"], ["x"], 0, "The derivative became 0.", True, newton)
-fnm = ("Newton modified", ["X0"], ["x"], 0, "There's a division by 0.",
+fn = ("Newton", ["X0"], ["x"], 0, "The derivative became 0.", "", identity, True, newton)
+fnm = ("Newton modified", ["X0"], ["x"], 0, "There's a division by 0.", identity,
        True, newton_modified)
-ffp = ("False position", ["a", "b"], ("a", "b", "xm"), 0, True, fake_rule)
+ffp = ("False position", ["a", "b"], ("a", "b", "xm"), 0, "", identity, True, fake_rule)
 
 methods = {1: fp, 2: fb, 3: fs, 4: fg, 5: fn, 6: fnm, 7: ffp, 8: ft, 9: fm}
 
@@ -469,7 +478,11 @@ def ui():
         print("------Parameters------ ")
         params = []
         if integers:
-            params.append(str2sym(input("Function to use: ")))
+            f_string = input("Function to use: ")
+            pyperclip.copy(f_string)
+            print("The function will be in your clipboard for further use!")
+            params.append(str2sym(f_string))
+
             if ans == lm - 1:
                 params.append(float(input("a: ")))
                 params.append(float(input("b: ")))
@@ -516,15 +529,16 @@ def ui():
                     elem1 = round_str(str(elem), DECIMALS)
                     string += elem1 + " "*(spaces - len(elem1) + DECIMALS)
                     ant = elem
-                fx = round_str(params[0].subs(x, sol[-1]).evalf(), DECIMALS)
+                fx = round_str(tuple_method[5](params[0], sol[-1]), DECIMALS)
                 string += fx + " "*(spaces - len(fx) + DECIMALS)
                 string += er
                 print(string)
                 i += 1
 
             if diverge:
-                print("The method failed because: " + tuple_method[4])
+                print("\nThe method failed because: " + tuple_method[4])
 
+            print("\nFunction passed " + str(params[0]))
             input("(press enter to continue)")
         else:
             func(params)
