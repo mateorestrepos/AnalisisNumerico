@@ -1,7 +1,10 @@
-function [y, td] = adamsbashfort_predicted(f, alpha, y0, T, N, tol, n_max)
+function [y, td] = adamsbashfort_predicted_time(f, alpha, y0, T, N, tol, n_max, t0)
+    if ~exist('t0', 'var')
+        t0 = 0;
+    end
     % Variable for running program
     h = T/N;
-    td = 0:h:T;
+    td = t0:h:T;
     m = ceil(alpha);
     len_vars = length(alpha);
     
@@ -15,8 +18,8 @@ function [y, td] = adamsbashfort_predicted(f, alpha, y0, T, N, tol, n_max)
     y = zeros(len_vars,N+1);
     fs = zeros(len_vars, N+1);
     
-    y(:,1) = y0(:,1);
-    f0 = f(y0(:,1));
+    y(:,1) = y0(:, 1);
+    f0 = f(t0, y0(:,1));
     fs(:, 1) = f0;
     
     k1 = 0:m-1;
@@ -30,7 +33,7 @@ function [y, td] = adamsbashfort_predicted(f, alpha, y0, T, N, tol, n_max)
         aux = sum(aux, 2);
         
         k2 = ks(1:j);
-        fs(:, j) = f(y(:, j));
+        fs(:, j) = f(td(j), y(:, j));
         
         fv = fs(:, 1:j);
         sum2 = sum(b(:, j+1-k2).*fv, 2);        
@@ -40,12 +43,13 @@ function [y, td] = adamsbashfort_predicted(f, alpha, y0, T, N, tol, n_max)
         sum3 = sum(a(:, j+1-k2).*fv, 2);
         
         i = 0;
-        pant = p - 1;
+        pant = p - tol - 1;
         term3 = ((j-1).^(alpha+1) - (j-1-alpha).*j.^alpha).*f0;
         while norm(p - pant) > tol || i < n_max
             pant = p;
+            
             % Calculating next p
-            p_initial = f(pant) + term3;
+            p_initial = f(td(j+1), pant) + term3;
             p = aux + term2.*(p_initial + sum3);    
             i = i + 1;
         end
@@ -54,4 +58,5 @@ function [y, td] = adamsbashfort_predicted(f, alpha, y0, T, N, tol, n_max)
     end
     
 end
+
 

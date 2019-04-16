@@ -1,4 +1,4 @@
-function [y, td] = adamsbashfort_predicted(f, alpha, y0, T, N, tol, n_max)
+function [y, td] = adamsbashfort(f, alpha, y0, T, N)
     % Variable for running program
     h = T/N;
     td = 0:h:T;
@@ -39,18 +39,8 @@ function [y, td] = adamsbashfort_predicted(f, alpha, y0, T, N, tol, n_max)
         % Calculating next y
         sum3 = sum(a(:, j+1-k2).*fv, 2);
         
-        i = 0;
-        pant = p - 1;
-        term3 = ((j-1).^(alpha+1) - (j-1-alpha).*j.^alpha).*f0;
-        while norm(p - pant) > tol || i < n_max
-            pant = p;
-            % Calculating next p
-            p_initial = f(pant) + term3;
-            p = aux + term2.*(p_initial + sum3);    
-            i = i + 1;
-        end
-        
-        y(:, j+1) = p;
+        p_initial = f(p) + ((j-1).^(alpha+1) - (j-1-alpha).*j.^alpha).*f0;
+        y(:,j+1) = aux + term2.*(p_initial + sum3);           
     end
     
 end
